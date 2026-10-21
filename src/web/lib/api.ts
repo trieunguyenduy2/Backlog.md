@@ -1,6 +1,7 @@
 import type { DuplicateRepairPlan, DuplicateRepairResult } from "../../core/duplicate-task-repair.ts";
 import type { TaskStatistics } from "../../core/statistics.ts";
 import type { TaskDetail } from "../../core/task-detail.ts";
+import type { WorktreesNotConfigured, WorktreesReport } from "../../core/worktrees.ts";
 import type {
 	BacklogConfig,
 	Decision,
@@ -662,6 +663,10 @@ export class ApiClient {
 		return this.fetchJson<
 			TaskStatistics & { statusCounts: Record<string, number>; priorityCounts: Record<string, number> }
 		>(`${API_BASE}/statistics`);
+	}
+
+	async fetchWorktrees(): Promise<WorktreesReport | WorktreesNotConfigured> {
+		return this.fetchJson<WorktreesReport | WorktreesNotConfigured>(`${API_BASE}/worktrees`);
 	}
 
 	async checkStatus(): Promise<InitializationStatus> {

@@ -182,6 +182,14 @@ const Icons = {
 			<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
 		</svg>
 	),
+	Worktrees: () => (
+		<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+			<circle cx="6" cy="5" r="2" strokeWidth={2} />
+			<circle cx="6" cy="19" r="2" strokeWidth={2} />
+			<circle cx="18" cy="8" r="2" strokeWidth={2} />
+			<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7v10M18 10c0 4-6 3-12 7" />
+		</svg>
+	),
 	Milestone: () => (
 		<svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 			<circle cx="12" cy="12" r="9" strokeWidth={2} />
@@ -691,6 +699,21 @@ const SideNavigation = memo(function SideNavigation({
 							<span className="ml-3 text-sm font-medium">Milestones</span>
 						</NavLink>
 
+						{/* Worktrees Navigation */}
+						<NavLink
+							to="/worktrees"
+							className={({ isActive }) =>
+								`flex items-center px-3 py-2 rounded-lg transition-colors duration-200 ${
+									isActive
+										? 'bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 font-medium'
+										: 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
+								}`
+							}
+						>
+							<Icons.Worktrees />
+							<span className="ml-3 text-sm font-medium">Worktrees</span>
+						</NavLink>
+
 						{/* Drafts Navigation */}
 						<NavLink
 							to="/drafts"
@@ -923,6 +946,23 @@ const SideNavigation = memo(function SideNavigation({
 						>
 							<div className="w-6 h-6 flex items-center justify-center">
 								<Icons.Milestone />
+							</div>
+						</NavLink>
+						{/* Worktrees Navigation */}
+						<NavLink
+							to="/worktrees"
+							data-tooltip-id="sidebar-tooltip"
+							data-tooltip-content="Worktrees"
+							className={({ isActive }) =>
+								`flex items-center justify-center p-3 rounded-md transition-colors duration-200 ${
+									isActive
+										? 'bg-blue-50 dark:bg-blue-600/20 text-blue-700 dark:text-blue-400'
+										: 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
+								}`
+							}
+						>
+							<div className="w-6 h-6 flex items-center justify-center">
+								<Icons.Worktrees />
 							</div>
 						</NavLink>
 						{/* Statistics Navigation */}

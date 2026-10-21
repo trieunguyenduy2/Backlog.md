@@ -9,6 +9,7 @@ import DraftsList from './components/DraftsList';
 import Settings from './components/Settings';
 import Statistics from './components/Statistics';
 import MilestonesPage from './components/MilestonesPage';
+import WorktreesPage from './components/WorktreesPage';
 import TaskDetailsModal from './components/TaskDetailsModal';
 import InitializationScreen from './components/InitializationScreen';
 import LoadingSpinner from './components/LoadingSpinner';
@@ -1038,6 +1039,7 @@ function AppContent() {
               />
             }
           />
+            <Route path="worktrees" element={<WorktreesPage tasks={tasks} onEditTask={handleEditTask} />} />
             <Route path="drafts" element={<DraftsList onEditTask={openDraftModal} onNewDraft={handleNewDraft} dateFormat={config?.dateFormat} />} />
             <Route path="documentation" element={<DocumentationDetail docs={docs} onRefreshData={refreshData} dateFormat={config?.dateFormat} />} />
             <Route path="documentation/:id" element={<DocumentationDetail docs={docs} onRefreshData={refreshData} dateFormat={config?.dateFormat} />} />

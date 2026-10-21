@@ -8,6 +8,7 @@ import { initializeProject } from "../core/init.ts";
 import type { SearchService } from "../core/search-service.ts";
 import { getTaskStatistics } from "../core/statistics.ts";
 import { loadTaskDetail } from "../core/task-detail.ts";
+import { buildWorktreesReport } from "../core/worktrees.ts";
 import { isCreateLockError, isTaskLockError } from "../file-system/operations.ts";
 import { BacklogToolError } from "../mcp/errors/mcp-errors.ts";
 import { MilestoneHandlers } from "../mcp/tools/milestones/handlers.ts";
@@ -412,6 +413,7 @@ export class BacklogServer {
 					"/board": spaIndexHtml,
 					"/board/*": spaIndexHtml,
 					"/milestones": spaIndexHtml,
+					"/worktrees": spaIndexHtml,
 					"/drafts": spaIndexHtml,
 					"/documentation": spaIndexHtml,
 					"/documentation/*": spaIndexHtml,
@@ -440,6 +442,9 @@ export class BacklogServer {
 					},
 					"/api/statuses": {
 						GET: async () => await this.handleGetStatuses(),
+					},
+					"/api/worktrees": {
+						GET: async () => await this.handleGetWorktrees(),
 					},
 					"/api/config": {
 						GET: async () => await this.handleGetConfig(),
@@ -1522,6 +1527,25 @@ export class BacklogServer {
 			}
 			console.error("Error updating decision:", error);
 			return Response.json({ error: "Failed to update decision" }, { status: 500 });
+		}
+	}
+
+	private async handleGetWorktrees(): Promise<Response> {
+		try {
+			const config = await this.core.filesystem.loadConfig();
+			const repoHint = config?.worktreesRepo?.trim() || this.core.filesystem.rootDir;
+			const tasks = await this.core.filesystem.listTasks();
+			const report = await buildWorktreesReport({ repoHint, base: config?.worktreesBase, tasks });
+			if (!report.configured && !config?.worktreesRepo?.trim()) {
+				return Response.json({
+					configured: false,
+					message: "Set worktrees_repo in the backlog config to a path inside a git repository to list its worktrees.",
+				});
+			}
+			return Response.json(report);
+		} catch (error) {
+			console.error("Error loading worktrees:", error);
+			return Response.json({ error: "Failed to load worktrees" }, { status: 500 });
 		}
 	}
 
