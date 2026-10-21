@@ -400,6 +400,14 @@ export interface BacklogConfig {
 	backlogDirectory?: string;
 	/** Global callback command to run on any task status change. Supports $TASK_ID, $OLD_STATUS, $NEW_STATUS, $TASK_TITLE variables. */
 	onStatusChange?: string;
+	/** Status the web "hand off" comment button moves a task to (must be one of `statuses`). Absent hides the button. */
+	handoffStatus?: string;
+	/** Label of the web "hand off" comment button. Defaults to "Reply & hand off". */
+	handoffLabel?: string;
+	/** Any path inside the git repository whose worktrees the Worktrees page lists. Defaults to the project root when that is a git repo. */
+	worktreesRepo?: string;
+	/** Ref the Worktrees page compares branches against. Defaults to origin/main, falling back to main. */
+	worktreesBase?: string;
 	/** ID prefix configuration for tasks and drafts. Defaults to { task: "task", draft: "draft" } */
 	prefixes?: PrefixConfig;
 	mcp?: {

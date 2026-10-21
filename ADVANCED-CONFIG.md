@@ -39,6 +39,10 @@ Running `backlog config` with no arguments launches the interactive advanced wiz
 | `checkActiveBranches` | Check task states across active branches for accuracy | `true` |
 | `activeBranchDays` | How many days a branch is considered active | `30` |
 | `onStatusChange`  | Shell command to run on status change | `(disabled)` |
+| `handoff_status` | Web UI: status the "Reply & hand off" comment button moves the task to (edit `config.yml`) | `(button hidden)` |
+| `handoff_label` | Web UI: label of the hand-off button | `Reply & hand off` |
+| `worktrees_repo` | Any path inside the git repo listed on the Worktrees page | `(project root if it is a git repo)` |
+| `worktrees_base` | Ref the Worktrees page compares branches against | `origin/main` (falls back to `main`) |
 | `backlog_directory` | Project-relative backlog folder, chosen at `backlog init` and read from `backlog.config.yml` in the project root | `backlog` |
 
 ## Detailed Notes

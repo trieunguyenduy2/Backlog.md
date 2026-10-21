@@ -151,6 +151,10 @@ function extractConfigKeyYaml(content: string, key: string): string | undefined 
 const CONFIG_VALUE_ERROR_NAME = "ConfigValueError";
 
 /** Reports a config value Backlog refuses to guess at, naming the file and the offending key. */
+function unquoteConfigValue(value: string): string {
+	return value.trim().replace(/^['"]|['"]$/g, "");
+}
+
 function configValueError(configPath: string, key: string, problem: string, remedy: string): Error {
 	const error = new Error(
 		`Backlog could not start because ${configPath} has an invalid value for "${key}"${problem ? `: ${problem}` : ""}. ${remedy}`,
@@ -2459,6 +2463,18 @@ ${description || `Milestone: ${title}`}`,
 					// Remove surrounding quotes if present, but preserve inner content
 					config.onStatusChange = value.replace(/^['"]|['"]$/g, "");
 					break;
+				case "handoff_status":
+					config.handoffStatus = unquoteConfigValue(value) || undefined;
+					break;
+				case "handoff_label":
+					config.handoffLabel = unquoteConfigValue(value) || undefined;
+					break;
+				case "worktrees_repo":
+					config.worktreesRepo = unquoteConfigValue(value) || undefined;
+					break;
+				case "worktrees_base":
+					config.worktreesBase = unquoteConfigValue(value) || undefined;
+					break;
 				case "task_prefix":
 					config.prefixes = { task: value.replace(/['"]/g, "") };
 					break;
@@ -2494,6 +2510,10 @@ ${description || `Milestone: ${title}`}`,
 			checkActiveBranches: config.checkActiveBranches,
 			activeBranchDays: config.activeBranchDays,
 			onStatusChange: config.onStatusChange,
+			handoffStatus: config.handoffStatus,
+			handoffLabel: config.handoffLabel,
+			worktreesRepo: config.worktreesRepo,
+			worktreesBase: config.worktreesBase,
 			prefixes: config.prefixes,
 			backlogDirectory: config.backlogDirectory,
 		};
@@ -2536,6 +2556,10 @@ ${description || `Milestone: ${title}`}`,
 				: []),
 			...(typeof config.activeBranchDays === "number" ? [`active_branch_days: ${config.activeBranchDays}`] : []),
 			...(config.onStatusChange ? [`onStatusChange: '${config.onStatusChange}'`] : []),
+			...(config.handoffStatus ? [`handoff_status: ${JSON.stringify(config.handoffStatus)}`] : []),
+			...(config.handoffLabel ? [`handoff_label: ${JSON.stringify(config.handoffLabel)}`] : []),
+			...(config.worktreesRepo ? [`worktrees_repo: ${JSON.stringify(config.worktreesRepo)}`] : []),
+			...(config.worktreesBase ? [`worktrees_base: ${JSON.stringify(config.worktreesBase)}`] : []),
 			...(config.prefixes?.task ? [`task_prefix: "${config.prefixes.task}"`] : []),
 			...(config.backlogDirectory ? [`backlog_directory: "${config.backlogDirectory}"`] : []),
 		];

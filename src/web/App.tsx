@@ -1089,6 +1089,8 @@ function AppContent() {
         definitionOfDoneDefaults={config?.definitionOfDone ?? []}
         defaultAssignee={config?.defaultAssignee}
         dateFormat={config?.dateFormat}
+        handoffStatus={config?.handoffStatus}
+        handoffLabel={config?.handoffLabel}
       />
 
       {dependencyCleanupNotice && (

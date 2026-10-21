@@ -41,6 +41,8 @@ interface Props {
   definitionOfDoneDefaults?: string[];
   defaultAssignee?: string[];
   dateFormat?: string;
+  handoffStatus?: string; // Status the "hand off" comment button moves the task to
+  handoffLabel?: string;
 }
 
 type Mode = "preview" | "edit" | "create";
@@ -198,6 +200,8 @@ export const TaskDetailsModal: React.FC<Props> = ({
   definitionOfDoneDefaults,
   defaultAssignee,
   dateFormat,
+  handoffStatus,
+  handoffLabel,
 }) => {
   const { theme } = useTheme();
   const isCreateMode = !task;
@@ -646,6 +650,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
     if (onSaved) void onSaved();
   }, [commentsChanged, onSaved]);
 
+  const canHandOff = Boolean(handoffStatus) && status.toLowerCase() !== handoffStatus?.toLowerCase();
   const hasCommentDraft = commentBody.trim() !== "" || commentAuthor.trim() !== "";
   // Nothing is persisted while creating, so any entered field is unsaved work.
   const hasCreateModeEntries =
@@ -985,7 +990,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
     }
   };
 
-  const handleAddComment = async () => {
+  const handleAddComment = async (handOff = false) => {
     if (demoting) return;
     if (!task || isReadOnly) return;
     const body = commentBody.trim();
@@ -1003,14 +1008,21 @@ export const TaskDetailsModal: React.FC<Props> = ({
     setError(null);
     preserveEditModeAfterCommentRefresh.current = true;
     try {
+      // Hand-off sends the comment and the status change in one update, so the status-change
+      // callback fires once and the comment is never saved without the hand-off.
       const updatedTask = await apiClient.updateTask(task.id, {
         commentsAppend: [body],
         ...(author.length > 0 && { commentAuthor: author }),
+        ...(handOff && handoffStatus && { status: handoffStatus }),
       });
       setDisplayComments(updatedTask.comments ?? []);
       setCommentsChanged(true);
       setCommentBody("");
       setCommentAuthor("");
+      if (handOff) {
+        setStatus(updatedTask.status);
+        if (onSaved) await onSaved();
+      }
     } catch (err) {
       preserveEditModeAfterCommentRefresh.current = false;
       setError(err instanceof Error ? err.message : String(err));
@@ -1673,7 +1685,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
                     placeholder="Add a comment..."
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                   />
-                  <div className="flex justify-end">
+                  <div className="flex flex-wrap justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => void handleAddComment()}
@@ -1682,6 +1694,16 @@ export const TaskDetailsModal: React.FC<Props> = ({
                     >
                       {commentSaving ? "Adding..." : "Add comment"}
                     </button>
+                    {canHandOff && (
+                      <button
+                        type="button"
+                        onClick={() => void handleAddComment(true)}
+                        disabled={commentSaving || commentBody.trim().length === 0}
+                        className="px-4 py-2 text-sm font-medium bg-emerald-600 text-white rounded-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition-colors disabled:opacity-50"
+                      >
+                        {handoffLabel?.trim() || "Reply & hand off"}
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
