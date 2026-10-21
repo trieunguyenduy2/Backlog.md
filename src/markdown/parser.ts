@@ -134,6 +134,7 @@ export function parseTask(content: string): Task {
 		priority,
 		type: frontmatter.type ? String(frontmatter.type) : undefined,
 		project: frontmatter.project ? String(frontmatter.project) : undefined,
+		workBranch: frontmatter.work_branch ? String(frontmatter.work_branch) : undefined,
 		ordinal: frontmatter.ordinal !== undefined ? Number(frontmatter.ordinal) : undefined,
 		onStatusChange: frontmatter.onStatusChange ? String(frontmatter.onStatusChange) : undefined,
 	};

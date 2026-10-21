@@ -6,6 +6,7 @@ export interface TaskEditArgs {
 	priority?: string;
 	type?: string;
 	project?: string;
+	workBranch?: string | null;
 	milestone?: string | null;
 	labels?: string[];
 	addLabels?: string[];

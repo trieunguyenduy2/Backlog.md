@@ -323,6 +323,7 @@ function buildUpdatedDateComparableTask(task: Task): Record<string, unknown> {
 		priority: task.priority,
 		type: task.type,
 		project: task.project,
+		workBranch: task.workBranch,
 		onStatusChange: task.onStatusChange,
 	};
 }
@@ -2198,6 +2199,7 @@ export class Core {
 		const priority = await this.normalizePriority(input.priority);
 		const type = await this.normalizeTaskType(input.type);
 		const project = await this.normalizeProject(input.project);
+		const workBranch = input.workBranch?.trim() || undefined;
 		const createdDate = formatUtcTimestamp();
 		if (
 			input.ordinal !== undefined &&
@@ -2270,6 +2272,7 @@ export class Core {
 				...(priority && { priority }),
 				...(type && { type }),
 				...(project && { project }),
+				...(workBranch && { workBranch }),
 				...(typeof ordinal === "number" && { ordinal }),
 				...(typeof input.milestone === "string" &&
 					input.milestone.trim().length > 0 && {
@@ -2499,6 +2502,18 @@ export class Core {
 					delete task.project;
 				} else {
 					task.project = normalizedProject;
+				}
+				mutated = true;
+			}
+		}
+
+		if (input.workBranch !== undefined) {
+			const normalizedWorkBranch = input.workBranch?.trim() || undefined;
+			if ((task.workBranch ?? undefined) !== normalizedWorkBranch) {
+				if (normalizedWorkBranch === undefined) {
+					delete task.workBranch;
+				} else {
+					task.workBranch = normalizedWorkBranch;
 				}
 				mutated = true;
 			}

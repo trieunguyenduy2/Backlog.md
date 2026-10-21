@@ -257,6 +257,22 @@ const TaskCard: React.FC<TaskCardProps> = ({
           {task.title}
         </h4>
 
+        {/* Work branch (git branch the task is worked on; not the cross-branch banner above) */}
+        {task.workBranch && (
+          <div
+            className="mt-1.5 inline-flex max-w-full items-center gap-1 rounded bg-sky-50 px-1.5 py-0.5 font-mono text-[10px] text-sky-700 dark:bg-sky-900/30 dark:text-sky-300"
+            title={`Work branch: ${task.workBranch}`}
+          >
+            <svg className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="6" cy="5" r="2" strokeWidth={2} />
+              <circle cx="6" cy="19" r="2" strokeWidth={2} />
+              <circle cx="18" cy="8" r="2" strokeWidth={2} />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 7v10M18 10c0 4-6 3-12 7" />
+            </svg>
+            <span className="truncate">{task.workBranch}</span>
+          </div>
+        )}
+
         {/* Labels - limit to 3 */}
         {task.labels.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">

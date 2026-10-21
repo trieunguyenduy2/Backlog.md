@@ -63,6 +63,13 @@ export function buildTaskUpdateInput(args: TaskEditArgs): TaskUpdateInput {
 		updateInput.project = args.project;
 	}
 
+	if (args.workBranch === null) {
+		updateInput.workBranch = null;
+	} else if (typeof args.workBranch === "string") {
+		const trimmed = args.workBranch.trim();
+		updateInput.workBranch = trimmed.length > 0 ? trimmed : null;
+	}
+
 	if (args.milestone === null) {
 		updateInput.milestone = null;
 	} else if (typeof args.milestone === "string") {

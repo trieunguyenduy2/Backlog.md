@@ -177,6 +177,11 @@ export function generateTaskCreateSchema(config: BacklogConfig): JsonSchema {
 			priority: generatePriorityFieldSchema(config),
 			type: generateTypeFieldSchema(config),
 			...(getProjectValues(config).length > 0 ? { project: generateProjectFieldSchema(config) } : {}),
+			workBranch: {
+				type: "string",
+				maxLength: 255,
+				description: "Optional git branch this task is worked on.",
+			},
 			ordinal: {
 				type: "number",
 				minimum: 0,
@@ -298,6 +303,11 @@ export function generateTaskEditSchema(config: BacklogConfig): JsonSchema {
 			priority: generatePriorityFieldSchema(config),
 			type: generateTypeFieldSchema(config),
 			...(getProjectValues(config).length > 0 ? { project: generateProjectFieldSchema(config) } : {}),
+			workBranch: {
+				type: "string",
+				maxLength: 255,
+				description: "Set the git branch this task is worked on; pass an empty string to clear it.",
+			},
 			ordinal: {
 				type: "number",
 				minimum: 0,

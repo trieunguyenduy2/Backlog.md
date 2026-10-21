@@ -76,6 +76,7 @@ type TaskDetailsFormState = {
   priority: string;
   taskType: string;
   project: string;
+  workBranch: string;
   dependencies: string[];
   references: string[];
   modifiedFiles: string[];
@@ -133,6 +134,7 @@ const buildTaskDetailsFormState = ({
   priority: task?.priority || "",
   taskType: task?.type || "",
   project: task?.project || "",
+  workBranch: task?.workBranch || "",
   dependencies: task?.dependencies || [],
   references: task?.references || [],
   modifiedFiles: task?.modifiedFiles || [],
@@ -388,6 +390,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
   const [priority, setPriority] = useState<string>(task?.priority || "");
   const [taskType, setTaskType] = useState<string>(task?.type || "");
   const [project, setProject] = useState<string>(task?.project || "");
+  const [workBranch, setWorkBranch] = useState<string>(task?.workBranch || "");
   const [typeUpdateError, setTypeUpdateError] = useState<string | null>(null);
   const [isTypeUpdating, setIsTypeUpdating] = useState(false);
   const typeUpdateInFlightRef = useRef(false);
@@ -575,6 +578,9 @@ export const TaskDetailsModal: React.FC<Props> = ({
       setPriority((current) => preserveDirtyRefreshValue(current, previousFormState.priority, nextFormState.priority));
       setTaskType((current) => preserveDirtyRefreshValue(current, previousFormState.taskType, nextFormState.taskType));
       setProject((current) => preserveDirtyRefreshValue(current, previousFormState.project, nextFormState.project));
+      setWorkBranch((current) =>
+        preserveDirtyRefreshValue(current, previousFormState.workBranch, nextFormState.workBranch),
+      );
       setDependencies((current) =>
         preserveDirtyRefreshValue(current, previousFormState.dependencies, nextFormState.dependencies, areJsonEqual),
       );
@@ -620,6 +626,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
     setPriority(nextFormState.priority);
     setTaskType(nextFormState.taskType);
     setProject(nextFormState.project);
+    setWorkBranch(nextFormState.workBranch);
     setDependencies(nextFormState.dependencies);
     setReferences(nextFormState.references);
     setModifiedFiles(nextFormState.modifiedFiles);
@@ -647,6 +654,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
       taskType.trim() !== "" ||
       priority.trim() !== "" ||
       project.trim() !== "" ||
+      workBranch.trim() !== "" ||
       milestone.trim() !== "" ||
       dueDate.trim() !== "" ||
       // The prefilled default is not the user's work, but removing or replacing it is.
@@ -834,6 +842,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
       if (isCreateMode) {
         taskData.type = taskType;
         taskData.project = project.trim().length > 0 ? project.trim() : undefined;
+        taskData.workBranch = workBranch.trim().length > 0 ? workBranch.trim() : undefined;
       }
 
       if (isCreateMode && onSubmit) {
@@ -917,6 +926,7 @@ export const TaskDetailsModal: React.FC<Props> = ({
     if (updates.priority !== undefined) setPriority(String(updates.priority));
     if (updates.type !== undefined) setTaskType(String(updates.type));
     if (updates.project !== undefined) setProject(String(updates.project));
+    if (updates.workBranch !== undefined) setWorkBranch(String(updates.workBranch));
     if (updates.dependencies !== undefined) setDependencies(updates.dependencies as string[]);
     if (updates.references !== undefined) setReferences(updates.references as string[]);
     if (updates.modifiedFiles !== undefined) setModifiedFiles(updates.modifiedFiles as string[]);
@@ -1857,6 +1867,30 @@ export const TaskDetailsModal: React.FC<Props> = ({
               </select>
             </div>
           )}
+
+          {/* Work branch */}
+          <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">
+            <SectionHeader title="Work branch" />
+            <input
+              type="text"
+              aria-label="Task work branch"
+              value={workBranch}
+              placeholder="feat/my-branch"
+              onChange={(e) => setWorkBranch(e.target.value)}
+              onBlur={() => {
+                if (task && workBranch.trim() !== (task.workBranch ?? "")) {
+                  void handleInlineMetaUpdate({ workBranch: workBranch.trim() });
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.currentTarget.blur();
+                }
+              }}
+              disabled={isReadOnly}
+              className={`w-full h-10 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md text-sm font-mono bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-stone-500 dark:focus:ring-stone-400 focus:border-transparent transition-colors duration-200 ${isReadOnly ? 'opacity-60 cursor-not-allowed' : ''}`}
+            />
+          </div>
 
           {/* Milestone */}
           <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-3">

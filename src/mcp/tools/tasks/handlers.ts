@@ -30,6 +30,7 @@ export type TaskCreateArgs = {
 	priority?: string;
 	type?: string;
 	project?: string;
+	workBranch?: string;
 	ordinal?: number;
 	status?: string;
 	dueDate?: string;
@@ -135,6 +136,7 @@ export class TaskHandlers {
 				priority: args.priority,
 				type: args.type,
 				project: args.project,
+				workBranch: args.workBranch,
 				...(typeof rawOrdinal === "number" ? { ordinal: rawOrdinal } : {}),
 				milestone,
 				labels: args.labels,

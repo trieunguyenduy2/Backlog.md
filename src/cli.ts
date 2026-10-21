@@ -593,6 +593,7 @@ function hasCreateFieldFlags(options: Record<string, unknown>): boolean {
 			options.priority !== undefined ||
 			options.type !== undefined ||
 			options.project !== undefined ||
+			options.workBranch !== undefined ||
 			options.ordinal !== undefined ||
 			options.milestone !== undefined ||
 			options.dueDate !== undefined ||
@@ -625,6 +626,7 @@ function hasEditFieldFlags(options: Record<string, unknown>): boolean {
 			options.priority !== undefined ||
 			options.type !== undefined ||
 			options.project !== undefined ||
+			options.workBranch !== undefined ||
 			options.ordinal !== undefined ||
 			options.milestone !== undefined ||
 			options.clearMilestone ||
@@ -1982,6 +1984,7 @@ addHelpSchema(taskCmd.command("create [title]"), {
 		{ name: "priority", type: priorityType, description: "Task priority" },
 		{ name: "type", type: taskType, description: "Task type; case-insensitive" },
 		{ name: "project", type: projectType, description: "Task project; case-insensitive" },
+		{ name: "work-branch", type: "String", description: "Git branch this task is worked on" },
 		{ name: "due-date", type: "date", description: "Optional due date (YYYY-MM-DD)" },
 		{ name: "acceptanceCriteria", type: "Markdown list item text", description: "Repeat --ac for multiple criteria" },
 		{ name: "ordinal", type: "Integer", description: "Non-negative manual ordering value" },
@@ -2019,6 +2022,7 @@ addHelpSchema(taskCmd.command("create [title]"), {
 	.option("--priority <priority>", "set task priority (configured priorities)")
 	.option("--type <type>", "set task type (configured task types)")
 	.option("--project <project>", "set task project (configured projects)")
+	.option("--work-branch <name>", "set the git branch this task is worked on")
 	.option("--due-date <date>", "set due date (YYYY-MM-DD)")
 	.option("--plain", "use plain text output after creating")
 	.option("--ac <criteria>", "add acceptance criteria (can be used multiple times)", createMultiValueAccumulator())
@@ -2150,6 +2154,7 @@ addHelpSchema(taskCmd.command("create [title]"), {
 				priority: options.priority ? String(options.priority) : undefined,
 				type: options.type !== undefined ? String(options.type) : undefined,
 				project: options.project !== undefined ? String(options.project) : undefined,
+				workBranch: options.workBranch !== undefined ? String(options.workBranch) : undefined,
 				...(ordinalValue !== undefined ? { ordinal: ordinalValue } : {}),
 				milestone,
 				implementationPlan: options.plan ? String(options.plan) : undefined,
@@ -3507,6 +3512,9 @@ async function performEdit(target: EditCommandTarget, requestedIds: string[] | u
 	if (options.project !== undefined) {
 		editArgs.project = String(options.project);
 	}
+	if (options.workBranch !== undefined) {
+		editArgs.workBranch = String(options.workBranch);
+	}
 	if (ordinalValue !== undefined) {
 		editArgs.ordinal = ordinalValue;
 	}
@@ -3680,6 +3688,7 @@ function configureEditCommand(cmd: Command) {
 		.option("--priority <priority>", "set task priority (configured priorities)")
 		.option("--type <type>", "set task type (configured task types; pass an empty value to clear)")
 		.option("--project <project>", "set task project (configured projects; pass an empty value to clear)")
+		.option("--work-branch <name>", "set the git branch this task is worked on (pass an empty value to clear)")
 		.option("--due-date <date>", "set due date (YYYY-MM-DD)")
 		.option("--clear-due-date", "clear task due date")
 		.option("--ordinal <number>", "set task ordinal for custom ordering")
@@ -3834,6 +3843,7 @@ const taskEditCommand = addHelpSchema(taskCmd.command("edit [taskIds...]"), {
 			type: projectType,
 			description: "Replacement task project; case-insensitive; pass an empty value to clear",
 		},
+		{ name: "work-branch", type: "String", description: "Replacement git work branch; pass an empty value to clear" },
 		{ name: "due-date", type: "date", description: "Set the task due date (YYYY-MM-DD)" },
 		{ name: "clear-due-date", type: "Boolean", description: "Clear the task due date" },
 		{
@@ -4278,6 +4288,7 @@ const draftEditCommand = addHelpSchema(draftCmd.command("edit [taskId]"), {
 			type: projectType,
 			description: "Replacement task project; case-insensitive; pass an empty value to clear",
 		},
+		{ name: "work-branch", type: "String", description: "Replacement git work branch; pass an empty value to clear" },
 		{ name: "due-date", type: "date", description: "Set the due date (YYYY-MM-DD)" },
 		{ name: "clear-due-date", type: "Boolean", description: "Clear the due date" },
 		{

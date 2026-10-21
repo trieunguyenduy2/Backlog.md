@@ -107,6 +107,9 @@ export function formatTaskPlainText(task: TaskDetail, options: TaskPlainTextOpti
 	if (task.project) {
 		lines.push(`Project: ${task.project}`);
 	}
+	if (task.workBranch) {
+		lines.push(`Work branch: ${task.workBranch}`);
+	}
 	if (task.ordinal !== undefined) {
 		lines.push(`Ordinal: ${task.ordinal}`);
 	}

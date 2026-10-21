@@ -1014,6 +1014,7 @@ export class BacklogServer {
 				priority: payload.priority,
 				type: typeof payload.type === "string" ? payload.type : undefined,
 				project: typeof payload.project === "string" ? payload.project : undefined,
+				workBranch: typeof payload.workBranch === "string" ? payload.workBranch : undefined,
 				milestone,
 				labels: payload.labels,
 				assignee: payload.assignee,
@@ -1128,6 +1129,10 @@ export class BacklogServer {
 
 		if ("project" in updates && (typeof updates.project === "string" || updates.project === null)) {
 			updateInput.project = updates.project;
+		}
+
+		if ("workBranch" in updates && (typeof updates.workBranch === "string" || updates.workBranch === null)) {
+			updateInput.workBranch = updates.workBranch;
 		}
 
 		if ("milestone" in updates && (typeof updates.milestone === "string" || updates.milestone === null)) {

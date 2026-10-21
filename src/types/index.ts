@@ -77,6 +77,8 @@ export interface Task {
 	type?: string;
 	/** Monorepo project/component this task belongs to. Allowed values come from config `projects`; absent config means the field is unusable. */
 	project?: string;
+	/** Git branch the work for this task happens on (frontmatter `work_branch`). Not the cross-branch `branch` marker. */
+	workBranch?: string;
 	branch?: string;
 	ordinal?: number;
 	filePath?: string;
@@ -130,6 +132,7 @@ export interface TaskCreateInput {
 	priority?: string;
 	type?: string;
 	project?: string;
+	workBranch?: string;
 	ordinal?: number;
 	milestone?: string;
 	labels?: string[];
@@ -156,6 +159,7 @@ export interface TaskUpdateInput {
 	priority?: string;
 	type?: string;
 	project?: string | null;
+	workBranch?: string | null;
 	milestone?: string | null;
 	labels?: string[];
 	addLabels?: string[];

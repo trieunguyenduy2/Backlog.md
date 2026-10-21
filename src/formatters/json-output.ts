@@ -23,6 +23,7 @@ type CompactTaskJson = {
 	type: string | null;
 	priority: string | null;
 	project: string | null;
+	workBranch: string | null;
 	assignees: string[];
 	reporter: string | null;
 	labels: string[];
@@ -141,6 +142,7 @@ function toCompactTaskJson(task: Task): CompactTaskJson {
 		type: nullable(task.type),
 		priority: nullable(task.priority),
 		project: nullable(task.project),
+		workBranch: nullable(task.workBranch),
 		assignees: task.assignee ?? [],
 		reporter: nullable(task.reporter),
 		labels: task.labels ?? [],

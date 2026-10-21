@@ -69,6 +69,7 @@ export function serializeTask(task: Task, originalContent = ""): string {
 		priority: task.priority || undefined,
 		type: task.type || undefined,
 		project: task.project || undefined,
+		work_branch: task.workBranch || undefined,
 		ordinal: task.ordinal,
 		onStatusChange: task.onStatusChange || undefined,
 	};
